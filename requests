@@ -1,0 +1,134 @@
+// Include data for accessing Google APIs
+
+const apiKey = '768';
+const url = 'https://www.googleapis.com/urlshortener/v1/url'
+const projection = 'FULL';
+
+// Some page elements
+
+const $inputField = $('#input');
+const $expandButton = $('#expand');
+const $shortenButton = $('#shorten');
+const $responseField = $('#responseField');
+
+// AJAX functions
+
+function expandUrl() {
+ const urlToExpand = url + '?key=' + apiKey +
+'&shortUrl=' + $inputField.val();
+ $.getJSON(urlToExpand, response => {
+  $responseField.append('<p>Your expanded url is: </p><p>' +
+  response.longUrl + '</p>');
+})
+}
+
+function shortenUrl() {
+   const urlWithKey = url + '?key=' + apiKey;
+   const urlToShorten = $inputField.val();
+   $.post({url: urlWithKey,
+          data: JSON.stringify({longUrl: urlToShorten}),
+          dataType: 'json',
+          contentType: 'application/json',
+          success(response){
+            $responseField.append('<p>Your shortened url is: </p><p>' + response.id + '</p>');
+          },
+           error(jqXHR, status, errorThrown){
+             console.log(jqXHR)
+           }
+        });
+}
+function expand() {
+  $responseField.empty();
+  expandUrl();
+  return false;
+}
+
+function shorten() {
+  $responseField.empty();
+  shortenUrl();
+  return false;
+}
+
+// Call functions on submit
+
+$expandButton.click(expand);
+$shortenButton.click(shorten);
+
+
+
+
+
+
+
+
+
+
+
+
+/* another request */
+
+// Include data for accessing Google APIs
+const apiKey = 'fdlfds';
+const url = 'https://www.googleapis.com/urlshortener/v1/url';
+
+// Some page elements
+const $inputField = $('#input');
+const $expandButton = $('#expand');
+const $shortenButton = $('#shorten');
+const $responseField = $('#responseField');
+
+// AJAX functions
+
+
+// Clear page and call AJAX functions
+function expand() {
+  $responseField.empty();
+  expandUrl();
+  return false;
+};
+
+function shorten() {
+  $responseField.empty();
+  shortenUrl();
+  return false;
+};
+
+async function shortenUrl(){
+  const urlToShorten = $inputField.val();
+const urlWithKey = url + '?key=' + apiKey;
+  try{
+      let response = await fetch(urlWithKey, {
+        method:'POST',
+        body: JSON.stringify( {longUrl: urlToShorten},
+                            ),
+        headers: {
+ "Content-type": "application/json"
+}
+      })
+      if (response.ok){
+        let jsonResponse = await response.json()
+        $responseField.append('<p> Your shortened URL is </p><p>' + jsonResponse.id + '</p>');
+return jsonResponse;
+      }
+    
+  }catch(error){
+    console.log(error)
+  }
+}
+
+async function expandUrl(){
+  const urlToExpand = url + '?shortUrl=' + $inputField.val() + '&key=' + apiKey;
+  try{
+    let response = await fetch(urlToExpand)
+    if(response.ok){
+      let jsonResponse = await response.json()
+      $responseField.append('<p> Your expanded URL is </p><p>' + jsonResponse.longUrl+ '</p>');
+return jsonResponse;
+    }
+  }catch(error){
+    console.log(error)
+  }
+}
+
+$expandButton.click(expand);
+$shortenButton.click(shorten);
